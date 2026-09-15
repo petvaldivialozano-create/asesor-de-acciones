@@ -13,7 +13,8 @@ on:
     - cron: "35 13 * * 1-5"
     - cron: "30 16 * * 1-5"
     - cron: "45 19 * * 1-5"
-  workflow_dispatch: {}   # te permite correrlo manualmente desde GitHub cuando quieras probar
+  # workflow_dispatch te permite correrlo manualmente desde GitHub cuando quieras probar
+  workflow_dispatch:
 
 jobs:
   analizar:
