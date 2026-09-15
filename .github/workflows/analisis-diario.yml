@@ -1,0 +1,41 @@
+name: Analisis diario de acciones
+
+on:
+  schedule:
+    # Los horarios de "schedule" en GitHub Actions son SIEMPRE en UTC.
+    # Estos equivalen aprox. a la apertura, mediodía y antes del cierre
+    # del mercado de EE.UU. (horario de verano ET, sep-nov):
+    #   13:35 UTC -> ~09:35 hora New York (apertura)
+    #   16:30 UTC -> ~12:30 hora New York (mediodía)
+    #   19:45 UTC -> ~15:45 hora New York (antes del cierre)
+    # Cuando EE.UU. cambie a horario de invierno (principios de noviembre),
+    # hay que sumarle 1 hora a cada valor UTC de abajo (ej. 13:35 -> 14:35).
+    - cron: "35 13 * * 1-5"
+    - cron: "30 16 * * 1-5"
+    - cron: "45 19 * * 1-5"
+  workflow_dispatch: {}   # te permite correrlo manualmente desde GitHub cuando quieras probar
+
+jobs:
+  analizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Correr el analista
+        env:
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python analista.py
+
+      - name: Guardar
