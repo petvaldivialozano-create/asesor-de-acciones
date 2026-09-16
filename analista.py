@@ -39,8 +39,9 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "TU_BOT_TOKEN_AQUI")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "TU_CHAT_ID_AQUI")
 
 # Watchlist inicial — acciones populares. Edítala a gusto.
+# 5 tickers x 5 llamadas a Alpha Vantage = 25/día, justo en el límite del plan gratuito.
 WATCHLIST = [
-    "NVDA", "AAPL", "MSFT", "TSLA", "AMZN", "GOOGL", "META", "AMD",
+    "NVDA", "TSLA", "AAPL", "META", "MSFT",
 ]
 
 # Dónde guardamos el historial de recomendaciones
