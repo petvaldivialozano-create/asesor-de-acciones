@@ -1,0 +1,47 @@
+name: Monitor de precios en vivo
+
+on:
+  schedule:
+    # Horarios en UTC. Chile está en UTC-3 actualmente (verano/horario normal
+    # de Chile en esta época del año) — ajustar si Chile cambia de horario.
+    # Revisa el precio 4 veces durante la sesión de mercado, cada ~2 horas:
+    #   14:00 UTC -> ~11:00 hora Chile
+    #   16:00 UTC -> ~13:00 hora Chile
+    #   18:00 UTC -> ~15:00 hora Chile
+    #   20:00 UTC -> ~17:00 hora Chile
+    - cron: "0 14 * * 1-5"
+    - cron: "0 16 * * 1-5"
+    - cron: "0 18 * * 1-5"
+    - cron: "0 20 * * 1-5"
+  # workflow_dispatch te permite correrlo manualmente desde GitHub cuando quieras probar
+  workflow_dispatch:
+
+jobs:
+  monitorear:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Correr el monitor
+        env:
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor_precios.py
+
+      - name: Commitear cambios en posiciones (si alguna se cerró)
+        run: |
+          git config user.name "asesor-bot"
+          git config user.email "asesor-bot@users.noreply.github.com"
+          git add posiciones.json
+          git diff --staged --quiet || git commit -m "Actualiza posiciones $(date -u +%F_%H:%M)"
+          git push

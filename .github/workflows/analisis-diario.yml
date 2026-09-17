@@ -45,6 +45,6 @@ jobs:
         run: |
           git config user.name "asesor-bot"
           git config user.email "asesor-bot@users.noreply.github.com"
-          git add recomendaciones.jsonl
-          git diff --staged --quiet || git commit -m "Actualiza recomendaciones $(date -u +%F_%H:%M)"
+          git add recomendaciones.jsonl posiciones.json
+          git diff --staged --quiet || git commit -m "Actualiza recomendaciones y posiciones $(date -u +%F_%H:%M)"
           git push
