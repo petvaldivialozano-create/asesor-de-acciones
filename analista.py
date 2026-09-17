@@ -40,8 +40,12 @@ TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "TU_CHAT_ID_AQUI")
 
 # Watchlist inicial — acciones populares. Edítala a gusto.
 # 5 tickers x 5 llamadas a Alpha Vantage = 25/día, justo en el límite del plan gratuito.
+# Watchlist inicial — acciones populares. Edítala a gusto.
+# 4 tickers x 5 llamadas a Alpha Vantage = 20/día, dejando margen para
+# que el monitor de precios (fase 2) pueda revisar posiciones abiertas
+# sin quedarse sin cupo (25/día total en el plan gratuito).
 WATCHLIST = [
-    "NVDA", "TSLA", "AAPL", "META", "MSFT",
+    "NVDA", "TSLA", "AAPL", "META",
 ]
 
 # Dónde guardamos el historial de recomendaciones
