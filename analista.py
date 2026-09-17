@@ -231,19 +231,44 @@ def save_analysis(analysis):
 
 
 def run():
+    resultados = []
     for ticker in WATCHLIST:
         try:
             analysis = analyze_ticker(ticker)
             save_analysis(analysis)
-
-            if analysis["recomendacion"] in ("COMPRA", "VENTA"):
-                send_telegram_alert(format_alert(analysis))
-
+            resultados.append(analysis)
             print(json.dumps(analysis, indent=2, ensure_ascii=False))
         except Exception as e:
             print(f"Error analizando {ticker}: {e}")
+            resultados.append({"ticker": ticker, "recomendacion": "ERROR", "error": str(e)})
 
         time.sleep(15)  # respeta límites de rate de las APIs gratuitas
+
+    enviar_resumen_diario(resultados)
+
+
+def enviar_resumen_diario(resultados):
+    """Envía SIEMPRE un mensaje a Telegram: con las señales de COMPRA/VENTA
+    si las hay, o confirmando que no hay entradas hoy si todo salió en ESPERA."""
+    accionables = [a for a in resultados if a.get("recomendacion") in ("COMPRA", "VENTA")]
+
+    fecha = datetime.now(timezone.utc).strftime("%d-%m-%Y")
+
+    if accionables:
+        partes = [f"📊 *Análisis del {fecha}*\n"]
+        for analysis in accionables:
+            partes.append(format_alert(analysis))
+        mensaje = "\n\n".join(partes)
+    else:
+        tickers_ok = [a["ticker"] for a in resultados if a.get("recomendacion") == "ESPERA"]
+        tickers_error = [a["ticker"] for a in resultados if a.get("recomendacion") == "ERROR"]
+        mensaje = f"📊 *Análisis del {fecha}*\n\n✅ No hay entradas ni salidas para hoy."
+        if tickers_ok:
+            mensaje += f"\nRevisadas en ESPERA: {', '.join(tickers_ok)}"
+        if tickers_error:
+            mensaje += f"\n⚠️ No se pudieron analizar: {', '.join(tickers_error)}"
+
+    send_telegram_alert(mensaje)
 
 
 if __name__ == "__main__":
