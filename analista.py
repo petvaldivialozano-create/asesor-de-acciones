@@ -37,9 +37,6 @@ ALPHA_VANTAGE_API_KEY = os.environ.get("ALPHA_VANTAGE_API_KEY", "TU_API_KEY_AQUI
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "TU_API_KEY_AQUI")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "TU_BOT_TOKEN_AQUI")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "TU_CHAT_ID_AQUI")
-
-# Watchlist inicial — acciones populares. Edítala a gusto.
-# 5 tickers x 5 llamadas a Alpha Vantage = 25/día, justo en el límite del plan gratuito.
 # Watchlist inicial — acciones populares. Edítala a gusto.
 # 4 tickers x 5 llamadas a Alpha Vantage = 20/día, dejando margen para
 # que el monitor de precios (fase 2) pueda revisar posiciones abiertas
