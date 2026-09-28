@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "ticker": "NVDA",
+    "precio_entrada": 223.0,
+    "precio_objetivo": 265.0,
+    "stop_loss": 205.0,
+    "fecha_compra": "2026-09-28T20:13:09.113091+00:00",
+    "estado": "abierta",
+    "origen": "automática (señal COMPRA del analista)"
+  }
+]
